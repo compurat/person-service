@@ -20,7 +20,7 @@ public class PersonController {
     public ResponseEntity<File> getChildProfile() {
         File resource = personService.retrieveChildProfile();
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename= profile.txt")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename= family.txt")
                 .body(resource);
     }
 
