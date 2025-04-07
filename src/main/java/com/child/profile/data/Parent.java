@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Parent extends Person {
     private List<Child> children = new ArrayList<>();
-    private Parent partner;
+    private String partner;
 
     public List<Child> getChildren() {
         return children;
@@ -16,11 +16,11 @@ public class Parent extends Person {
         this.children = children;
     }
 
-    public Parent getPartner() {
+    public String getPartner() {
         return partner;
     }
 
-    public void setPartner(Parent partner) {
+    public void setPartner(String partner) {
         this.partner = partner;
     }
 

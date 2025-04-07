@@ -24,7 +24,10 @@ public class PersonService {
         this.personCreator = personCreator;
         this.fileStorageConfig = fileStorageConfig;
     }
-
+    public String createPerson(List<Parent> parent) {
+        personCreator.addPerson(parent);
+        return "Person created successfully";
+    }
     public File retrieveChildProfile() {
         List<Parent> parents = personCreator.createPersons();
         StringBuilder personsInfo = new StringBuilder();
@@ -67,8 +70,8 @@ public class PersonService {
         for (Child child : children) {
             childrenInfo.append(child.getName()).append(",");
             childrenInfo.append("Birth Date: ").append(child.getBirthDate()).append(",");
-            childrenInfo.append("Parent 1: ").append(child.getParent1().getName()).append(",");
-            childrenInfo.append("Parent 2: ").append(child.getParent2().getName()).append(",");
+            childrenInfo.append("Parent 1: ").append(child.getParent1()).append(",");
+            childrenInfo.append("Parent 2: ").append(child.getParent2()).append(",");
 
         }
         return childrenInfo.toString();

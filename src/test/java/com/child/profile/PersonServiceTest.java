@@ -102,7 +102,7 @@ class PersonServiceTest {
         Parent parent = new Parent();
         parent.setName("John Doe");
         parent.setBirthDate(birthDate);
-        parent.setPartner(new Parent());
+        parent.setPartner("Jane Doe");
         parent.setChildren(List.of(new Child(), new Child(), new Child()));
         return parent;
     }
@@ -112,8 +112,8 @@ class PersonServiceTest {
         Child child = new Child();
         child.setName("Child Doe");
         child.setBirthDate(birthDate);
-        child.setParent1(createParentDtoMock(birthDate));
-        child.setParent2(createParentDtoMock(birthDate));
+        child.setParent1("John Doe");
+        child.setParent2("Jane Doe");
              return child;
     }
 

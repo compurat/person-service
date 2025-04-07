@@ -1,31 +1,34 @@
 package com.child.profile;
 
 import com.child.profile.config.FileStorageConfig;
+import com.child.profile.data.Parent;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @Controller
 public class PersonController {
 
     private final PersonService personService;
-    private final FileStorageConfig fileStorageConfig;
-    public PersonController(PersonService personService, FileStorageConfig fileStorageConfig) {
+    public PersonController(PersonService personService) {
         this.personService = personService;
-        this.fileStorageConfig = fileStorageConfig;
     }
 
+    @PostMapping("/create")
+    public ResponseEntity<String> createPerson(@RequestBody List<Parent> parents) {
+        return ResponseEntity.ok(personService.createPerson(parents));
+    }
 
-    @GetMapping("/profile")
+    @GetMapping("/download")
     public ResponseEntity<Resource> downloadFile() {
         File familyFile = personService.retrieveChildProfile();
         try {
