@@ -98,6 +98,30 @@ class PersonServiceTest {
 
     }
 
+    @Test
+    public void testAddPersonNoParentId() {
+        PersonCreator deletedChildCreator = new PersonCreator();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(1980, Calendar.DECEMBER, 31);
+        Parent parent1 = createParentDtoMock(calendar.getTime());
+        parent1.setId(-1);
+        calendar.set(1980, Calendar.DECEMBER, 31);
+        Parent parent2 = createParentDtoMock(calendar.getTime());
+        calendar.set(1980, Calendar.DECEMBER, 31);
+        Child child1 = createChildDtoMock(calendar.getTime());
+        calendar.set(1980, Calendar.DECEMBER, 31);
+        Child child2 = createChildDtoMock(calendar.getTime());
+        calendar.set(2020, Calendar.DECEMBER, 31);
+        Child child3 = createChildDtoMock(calendar.getTime());
+        List<Child> children = List.of(child1, child2, child3);
+        parent1.setChildren(children);
+        parent2.setChildren(children);
+        String content = personService.createPerson(List.of(parent1, parent2));
+        assertEquals("Parent data is not valid", content);
+
+    }
+
+
     private Parent createParentDtoMock(Date birthDate) {
         Parent parent = new Parent();
         parent.setName("John Doe");

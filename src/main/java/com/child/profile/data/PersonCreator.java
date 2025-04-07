@@ -63,10 +63,15 @@ public class PersonCreator {
         createPersons().removeIf(person -> person.getId() == id);
     }
 
-    public void addPerson(List<Parent> newParents) {
+    public String addPerson(List<Parent> newParents) {
         List<Parent> parents = createPersons();
+        for (Parent person : newParents) {
+            if (person.getId() == null) {
+               return "Person ID cannot be null";
+            }
+        }
               parents.addAll(newParents)  ;
-        System.out.println("added persons");
+       return "Person added successfully";
     }
 
     public void updatePerson(int id, Parent updatedPerson) {

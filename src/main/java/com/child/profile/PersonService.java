@@ -24,8 +24,13 @@ public class PersonService {
         this.personCreator = personCreator;
         this.fileStorageConfig = fileStorageConfig;
     }
-    public String createPerson(List<Parent> parent) {
-        personCreator.addPerson(parent);
+    public String createPerson(List<Parent> parents) {
+        for (Parent parent : parents) {
+            if (!checkPersonFields(parent)) {
+                return "Parent data is not valid";
+            }
+        }
+        personCreator.addPerson(parents);
         return "Person created successfully";
     }
     public File retrieveChildProfile() {
@@ -98,7 +103,7 @@ public class PersonService {
         return checkedAge.get();
     }
     private boolean checkPersonFields(Parent parent) {
-        return parent.getId() > -1 &&
+        return (parent.getId() > -1) &&
                 (parent.getName() != null || !parent.getName().isEmpty()) &&
                 parent.getBirthDate() != null &&
                 (parent.getPartner() != null || !parent.getPartner().isEmpty());
