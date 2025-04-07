@@ -32,6 +32,9 @@ public class PersonService {
         List<Parent> parents = personCreator.createPersons();
         StringBuilder personsInfo = new StringBuilder();
         for (Parent parent : parents) {
+            if (!checkPersonFields(parent)) {
+                return createFamilyFile("Parent data is not valid");
+            }
             List<Child> children = parent.getChildren();
             if (!(checkChildrenAge(children))) {
                 return createFamilyFile("No children under 18");
@@ -68,6 +71,9 @@ public class PersonService {
     private String childrenInfo(List<Child> children) {
         StringBuilder childrenInfo = new StringBuilder();
         for (Child child : children) {
+            if (!checkChildFields(child)) {
+                return "Child data is not valid";
+            }
             childrenInfo.append(child.getName()).append(",");
             childrenInfo.append("Birth Date: ").append(child.getBirthDate()).append(",");
             childrenInfo.append("Parent 1: ").append(child.getParent1()).append(",");
@@ -90,5 +96,18 @@ public class PersonService {
             }
         }
         return checkedAge.get();
+    }
+    private boolean checkPersonFields(Parent parent) {
+        return parent.getId() > -1 &&
+                (parent.getName() != null || !parent.getName().isEmpty()) &&
+                parent.getBirthDate() != null &&
+                (parent.getPartner() != null || !parent.getPartner().isEmpty());
+    }
+    private boolean checkChildFields(Child child) {
+        return child.getId() > -1 &&
+                (child.getName() != null || !child.getName().isEmpty()) &&
+                child.getBirthDate() != null &&
+                (child.getParent1() != null || !child.getParent1().isEmpty()) &&
+                (child.getParent2() != null || !child.getParent2().isEmpty());
     }
 }
