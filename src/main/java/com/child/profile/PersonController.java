@@ -15,7 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-@Controller
+@RestController
 public class PersonController {
 
     private final PersonService personService;
