@@ -1,6 +1,8 @@
 package com.child.profile;
 
-import com.child.profile.data.Person;
+import com.child.profile.config.FileStorageConfig;
+import com.child.profile.data.Child;
+import com.child.profile.data.Parent;
 import com.child.profile.data.PersonCreator;
 import org.springframework.stereotype.Service;
 
@@ -16,36 +18,36 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class PersonService {
 
     private final PersonCreator personCreator;
+    private final FileStorageConfig fileStorageConfig;
 
-    PersonService(PersonCreator personCreator) {
+    PersonService(PersonCreator personCreator, FileStorageConfig fileStorageConfig) {
         this.personCreator = personCreator;
+        this.fileStorageConfig = fileStorageConfig;
     }
 
     public File retrieveChildProfile() {
-        List<Person> persons = personCreator.createPersons();
+        List<Parent> parents = personCreator.createPersons();
         StringBuilder personsInfo = new StringBuilder();
-        for (Person person : persons) {
-            List<Person> children = person.getChildren();
+        for (Parent parent : parents) {
+            List<Child> children = parent.getChildren();
             if (!(checkChildrenAge(children))) {
                 return createFamilyFile("No children under 18");
             }
 
             if (children.size() == 3) {
-                personsInfo.append("Name: ").append(person.getName()).append(",");
-                personsInfo.append("Birth Date: ").append(person.getBirthDate()).append(",");
-                personsInfo.append("Parent 1: ").append(person.getParent1().getName()).append(",");
-                personsInfo.append("Parent 2: ").append(person.getParent2().getName()).append(",");
+                personsInfo.append("Name: ").append(parent.getName()).append(",");
+                personsInfo.append("Birth Date: ").append(parent.getBirthDate()).append(",");
 
                 if (!children.isEmpty()) {
                     personsInfo.append(childrenInfo(children));
                 }
 
             } else {
-               return createFamilyFile("There where no 3 children found");
+                return createFamilyFile("There where no 3 children found");
             }
         }
         if (!personsInfo.isEmpty()) {
-           return createFamilyFile(personsInfo.toString());
+            return createFamilyFile(personsInfo.toString());
         }
         return createFamilyFile("No data found");
     }
@@ -53,16 +55,16 @@ public class PersonService {
     private File createFamilyFile(String content) {
         File familyFile = null;
         try {
-            familyFile = Files.writeString(Path.of("family.txt"), Base64.getEncoder().encodeToString(content.getBytes())).toFile();
+            familyFile = Files.writeString(Path.of(fileStorageConfig.getFileStoragePath() + "/family.txt"), Base64.getEncoder().encodeToString(content.getBytes())).toFile();
         } catch (IOException ioe) {
             System.out.println("Error writing to file: " + ioe.getMessage());
         }
         return familyFile;
     }
 
-    private String childrenInfo(List<Person> children) {
+    private String childrenInfo(List<Child> children) {
         StringBuilder childrenInfo = new StringBuilder();
-        for (Person child : children) {
+        for (Child child : children) {
             childrenInfo.append(child.getName()).append(",");
             childrenInfo.append("Birth Date: ").append(child.getBirthDate()).append(",");
             childrenInfo.append("Parent 1: ").append(child.getParent1().getName()).append(",");
@@ -71,9 +73,10 @@ public class PersonService {
         }
         return childrenInfo.toString();
     }
-    private boolean checkChildrenAge(List<Person> children) {
+
+    private boolean checkChildrenAge(List<Child> children) {
         AtomicBoolean checkedAge = new AtomicBoolean(false);
-        for (Person child : children) {
+        for (Child child : children) {
             if (child.getBirthDate() != null) {
                 long ageInMillis = System.currentTimeMillis() - child.getBirthDate().getTime();
                 long ageInYears = ageInMillis / (1000L * 60 * 60 * 24 * 365);
