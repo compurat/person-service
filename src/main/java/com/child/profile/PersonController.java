@@ -1,18 +1,14 @@
 package com.child.profile;
 
-import com.child.profile.config.FileStorageConfig;
 import com.child.profile.data.Parent;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
@@ -25,12 +21,12 @@ public class PersonController {
 
     @PostMapping("/create")
     public ResponseEntity<String> createPerson(@RequestBody List<Parent> parents) {
-        return ResponseEntity.ok(personService.createPerson(parents));
+        return ResponseEntity.ok(personService.createFamily(parents));
     }
 
     @GetMapping("/download")
     public ResponseEntity<Resource> downloadFile() {
-        File familyFile = personService.retrieveChildProfile();
+        File familyFile = personService.retrieveFamilyFile();
         try {
             Resource resource = new UrlResource(familyFile.toPath().toUri());
 

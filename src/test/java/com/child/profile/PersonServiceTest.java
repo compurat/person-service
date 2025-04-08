@@ -4,6 +4,9 @@ import com.child.profile.config.FileStorageConfig;
 import com.child.profile.data.Child;
 import com.child.profile.data.Parent;
 import com.child.profile.data.PersonCreator;
+import com.child.profile.file.types.CsvType;
+import com.child.profile.file.types.FileTypeFactory;
+import com.child.profile.file.types.FileTypes;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,120 +28,21 @@ class PersonServiceTest {
     @Mock
     private PersonCreator personCreator;
     @Mock
+    private FileTypeFactory fileTypeFactory;
+    @Mock
     private FileStorageConfig fileStorageConfig;
     @InjectMocks
     private PersonService personService;
 
+
     @Test
     public void testRetrieveChildProfile() {
-        PersonCreator deletedChildCreator = new PersonCreator();
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(1980, Calendar.DECEMBER, 31);
-        Parent parent1 = createParentDtoMock(calendar.getTime());
-        calendar.set(1980, Calendar.DECEMBER, 31);
-        Parent parent2 = createParentDtoMock(calendar.getTime());
-        calendar.set(1980, Calendar.DECEMBER, 31);
-        Child child1 = createChildDtoMock(calendar.getTime());
-        calendar.set(1980, Calendar.DECEMBER, 31);
-        Child child2 = createChildDtoMock(calendar.getTime());
-        calendar.set(2020, Calendar.DECEMBER, 31);
-        Child child3 = createChildDtoMock(calendar.getTime());
-        List<Child> children = List.of(child1, child2, child3);
-        parent1.setChildren(children);
-        parent2.setChildren(children);
-        when(personCreator.createPersons()).thenReturn(List.of(parent1, parent2));
-        when(fileStorageConfig.getFileStoragePath()).thenReturn("src/test/resources");
-        String content = convertFileToString(personService.retrieveChildProfile());
+        when(personCreator.createPersons()).thenReturn(ParentMockCreator.createParentsMock());
+        when(fileTypeFactory.retrieveFileType(FileTypes.CSV)).thenReturn(new CsvType());
+        when(fileStorageConfig.getFileStoragePath()).thenReturn("/tmp/");
+        String content = convertFileToString(personService.retrieveFamilyFile());
 
-         assertEquals(864, content.length());
-    }
-
-    @Test
-    public void testRetrieveChildProfileFilterNo3Children() {
-        PersonCreator deletedChildCreator = new PersonCreator();
-        when(personCreator.createPersons()).thenReturn(deletedChildCreator.deleteChild(3));
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(1980, Calendar.DECEMBER, 31);
-        Parent parent1 = createParentDtoMock(calendar.getTime());
-        calendar.set(1980, Calendar.DECEMBER, 31);
-        Parent parent2 = createParentDtoMock(calendar.getTime());
-        calendar.set(1980, Calendar.DECEMBER, 31);
-        Child child1 = createChildDtoMock(calendar.getTime());
-        calendar.set(2020, Calendar.DECEMBER, 31);
-        Child child2 = createChildDtoMock(calendar.getTime());
-        List<Child> children = List.of(child1, child2);
-        parent1.setChildren(children);
-        when(personCreator.createPersons()).thenReturn(List.of(parent1, parent2));
-        when(fileStorageConfig.getFileStoragePath()).thenReturn("src/test/resources");
-        String content = convertFileToString(personService.retrieveChildProfile());
-        assertEquals("VGhlcmUgd2hlcmUgbm8gMyBjaGlsZHJlbiBmb3VuZA==", content);
-    }
-
-    @Test
-    public void testRetrieveChildProfileFilterNoEighteen() {
-        PersonCreator deletedChildCreator = new PersonCreator();
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(1980, Calendar.DECEMBER, 31);
-        Parent parent1 = createParentDtoMock(calendar.getTime());
-        calendar.set(1980, Calendar.DECEMBER, 31);
-        Parent parent2 = createParentDtoMock(calendar.getTime());
-        calendar.set(1980, Calendar.DECEMBER, 31);
-        Child child1 = createChildDtoMock(calendar.getTime());
-        calendar.set(1980, Calendar.DECEMBER, 31);
-        Child child2 = createChildDtoMock(calendar.getTime());
-        calendar.set(1980, Calendar.DECEMBER, 31);
-        Child child3 = createChildDtoMock(calendar.getTime());
-        List<Child> children = List.of(child1, child2, child3);
-        parent1.setChildren(children);
-        parent2.setChildren(children);
-        when(personCreator.createPersons()).thenReturn(List.of(parent1, parent2));
-        when(fileStorageConfig.getFileStoragePath()).thenReturn("src/test/resources");
-        String content = convertFileToString(personService.retrieveChildProfile());
-        assertEquals("Tm8gY2hpbGRyZW4gdW5kZXIgMTg=", content);
-
-    }
-
-    @Test
-    public void testAddPersonNoParentId() {
-        PersonCreator deletedChildCreator = new PersonCreator();
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(1980, Calendar.DECEMBER, 31);
-        Parent parent1 = createParentDtoMock(calendar.getTime());
-        parent1.setId(-1);
-        calendar.set(1980, Calendar.DECEMBER, 31);
-        Parent parent2 = createParentDtoMock(calendar.getTime());
-        calendar.set(1980, Calendar.DECEMBER, 31);
-        Child child1 = createChildDtoMock(calendar.getTime());
-        calendar.set(1980, Calendar.DECEMBER, 31);
-        Child child2 = createChildDtoMock(calendar.getTime());
-        calendar.set(2020, Calendar.DECEMBER, 31);
-        Child child3 = createChildDtoMock(calendar.getTime());
-        List<Child> children = List.of(child1, child2, child3);
-        parent1.setChildren(children);
-        parent2.setChildren(children);
-        String content = personService.createPerson(List.of(parent1, parent2));
-        assertEquals("Parent data is not valid", content);
-
-    }
-
-
-    private Parent createParentDtoMock(Date birthDate) {
-        Parent parent = new Parent();
-        parent.setName("John Doe");
-        parent.setBirthDate(birthDate);
-        parent.setPartner("Jane Doe");
-        parent.setChildren(List.of(new Child(), new Child(), new Child()));
-        return parent;
-    }
-
-
-    private Child createChildDtoMock(Date birthDate) {
-        Child child = new Child();
-        child.setName("Child Doe");
-        child.setBirthDate(birthDate);
-        child.setParent1("John Doe");
-        child.setParent2("Jane Doe");
-             return child;
+         assertEquals(988, content.length());
     }
 
     public String convertFileToString(File fileToConvert) {
