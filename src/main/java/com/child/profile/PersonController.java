@@ -1,6 +1,7 @@
 package com.child.profile;
 
 import com.child.profile.data.Parent;
+import jakarta.validation.Valid;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +21,7 @@ public class PersonController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createPerson(@RequestBody List<Parent> parents) {
+    public ResponseEntity<String> createPerson(@RequestBody List<@Valid Parent> parents) {
         return ResponseEntity.ok(personService.createFamily(parents));
     }
 

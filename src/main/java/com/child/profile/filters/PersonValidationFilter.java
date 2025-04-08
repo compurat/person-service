@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
 @Component
 @Priority(1)
 public class PersonValidationFilter implements Filter {
-    List<String> blockedUrls = List.of("/profile/download");
+    List<String> blockedUrls = List.of("/profile/download", "/child/delete");
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -57,9 +56,9 @@ public class PersonValidationFilter implements Filter {
         if (!(checkChildrenAge(children))) {
             return false;
         }
-
+        boolean checkedAge = checkChildrenAge(children);
         return children.stream().allMatch(child ->
-                ageChecker(child) &&
+               checkedAge &&
                 children.size() >= 3 &&
                 child.getName() != null &&
                 !child.getName().isEmpty() &&
@@ -86,6 +85,7 @@ public class PersonValidationFilter implements Filter {
         AtomicBoolean checkedAge = new AtomicBoolean(false);
         for (Child child : children) {
                 if (ageChecker(child)) {
+                    checkedAge.set(true);
                     break;
                 }
         }

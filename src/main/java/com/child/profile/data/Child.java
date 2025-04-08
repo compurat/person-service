@@ -1,5 +1,8 @@
 package com.child.profile.data;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.Date;
 
 public class Child {
