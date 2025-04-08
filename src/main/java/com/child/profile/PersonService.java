@@ -38,7 +38,7 @@ public class PersonService {
         FileType csvType = fileTypeFactory.retrieveFileType(FileTypes.CSV);
         File familyFile = null;
         try {
-           familyFile = Files.writeString(Path.of(fileStorageConfig.getFileStoragePath() + "/family.txt"), Base64.getEncoder().encodeToString(csvType.retrieveContent(parents).getBytes())).toFile();
+           familyFile = Files.writeString(Path.of(fileStorageConfig.getFileStoragePath() + "family.csv"), Base64.getEncoder().encodeToString(csvType.retrieveContent(parents).getBytes())).toFile();
         } catch (IOException ioException) {
             System.out.println("Error writing to file: " + ioException.getMessage());
         }
