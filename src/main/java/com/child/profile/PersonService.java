@@ -7,6 +7,8 @@ import com.child.profile.file.types.CsvType;
 import com.child.profile.file.types.FileType;
 import com.child.profile.file.types.FileTypeFactory;
 import com.child.profile.file.types.FileTypes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +25,7 @@ public class PersonService {
     private final PersonCreator personCreator;
     private final FileTypeFactory fileTypeFactory;
     private final FileStorageConfig fileStorageConfig;
-
+    private final Logger logger = LoggerFactory.getLogger(PersonService.class);
     @Autowired
     public PersonService(PersonCreator personCreator,
                          FileTypeFactory fileTypeFactory,
@@ -40,7 +42,7 @@ public class PersonService {
         try {
            familyFile = Files.writeString(Path.of(fileStorageConfig.getFileStoragePath() + "family.csv"), Base64.getEncoder().encodeToString(csvType.retrieveContent(parents).getBytes())).toFile();
         } catch (IOException ioException) {
-            System.out.println("Error writing to file: " + ioException.getMessage());
+           logger.error("Error writing to file: ", ioException);
         }
         return familyFile;
     }

@@ -7,6 +7,8 @@ import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.Base64;
@@ -14,9 +16,7 @@ import java.util.List;
 
 public class CsvType implements FileType{
 
-
-
-
+    private final Logger logger = LoggerFactory.getLogger(CsvType.class);
     @Override
     public String retrieveContent(List<Parent> parents) {
         String family = "";
@@ -26,14 +26,14 @@ public class CsvType implements FileType{
                 try {
                     createChildren(parent.getChildren(), stringWriter);
                 } catch (CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
-                    System.out.println("Could not convert csv file");
+                    logger.error("Could not convert csv file",e);
                 }
             });
             family = stringWriter.toString();
         } catch (IOException ioe) {
-            System.out.println("Error writing to file: " + ioe.getMessage());
+            logger.error("Error writing to file: ", ioe);
         } catch (CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
-            System.out.println("Could not convert csv file");;
+            logger.error("Could not convert csv file", e);;
         }
         return family;
     }
