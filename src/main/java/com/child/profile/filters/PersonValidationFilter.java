@@ -59,7 +59,7 @@ public class PersonValidationFilter implements Filter {
         }
 
         return children.stream().allMatch(child ->
-                checkBirthDay(child) &&
+                ageChecker(child) &&
                 children.size() >= 3 &&
                 child.getName() != null &&
                 !child.getName().isEmpty() &&
@@ -70,13 +70,6 @@ public class PersonValidationFilter implements Filter {
                 child.getParent2() != null &&
                 !child.getParent2().isEmpty()
         );
-    }
-
-    private boolean checkBirthDay(Child child) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(child.getBirthDate());
-        calendar.add(Calendar.DAY_OF_YEAR, -18);
-        return child.getBirthDate().after(calendar.getTime());
     }
 
     private boolean checkParentFields(List<Parent> parents) {
@@ -92,18 +85,21 @@ public class PersonValidationFilter implements Filter {
     private boolean checkChildrenAge(List<Child> children) {
         AtomicBoolean checkedAge = new AtomicBoolean(false);
         for (Child child : children) {
-            if (child.getBirthDate() != null) {
-                long ageInMillis = System.currentTimeMillis() - child.getBirthDate().getTime();
-                long ageInYears = ageInMillis / (1000L * 60 * 60 * 24 * 365);
-                checkedAge.set(ageInYears < 18);
-                if (checkedAge.get()) {
+                if (ageChecker(child)) {
                     break;
                 }
-            }
         }
         return checkedAge.get();
     }
 
+    private boolean ageChecker(Child child) {
+        if (child.getBirthDate() != null) {
+            long ageInMillis = System.currentTimeMillis() - child.getBirthDate().getTime();
+            long ageInYears = ageInMillis / (1000L * 60 * 60 * 24 * 365);
+            return ageInYears < 18;
+        }
+        return false;
+    }
    @Override
     public void destroy() {
         // Cleanup code, if needed

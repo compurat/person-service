@@ -49,4 +49,13 @@ public class PersonService {
         personCreator.addPerson(parents);
         return "Person created successfully";
     }
+    public String deleteFamily(int familyId) {
+        personCreator.deletePerson(familyId);
+        return "Person deleted successfully";
+    }
+
+    public String updateFamily(int familyId, Parent parent) {
+        personCreator.updatePerson(familyId, parent);
+        return "Person updated successfully";
+    }
 }

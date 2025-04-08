@@ -41,4 +41,12 @@ public class PersonController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+    @DeleteMapping("/delete/{familyId}")
+    public ResponseEntity<String> deletePerson(@PathVariable int familyId) {
+        return ResponseEntity.ok(personService.deleteFamily(familyId));
+    }
+    @PutMapping("/update/{familyId}")
+    public ResponseEntity<String> updatePerson(@PathVariable int familyId, @RequestBody Parent parent) {
+        return ResponseEntity.ok(personService.updateFamily(familyId, parent));
+    }
 }
