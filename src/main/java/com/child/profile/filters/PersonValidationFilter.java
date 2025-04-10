@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Component
 @Priority(1)
 public class PersonValidationFilter implements Filter {
-    List<String> blockedUrls = List.of("/profile/download", "/child/delete");
+   private final List<String> blockedUrls = List.of("/profile/download", "/child/delete");
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
